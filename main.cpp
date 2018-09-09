@@ -18,6 +18,7 @@
 #include <numeric>
 #include <sstream>
 #include <iostream>
+#include <iterator>
 #include <algorithm>
 #include <unordered_map>
 
@@ -117,7 +118,8 @@ public:
     {
         string cancelId = op[1]; // second col is the order id
         // search buy pricebook
-        for(auto it = m_buy.begin(); it != m_buy.end(); ++it)
+        auto it = m_buy.begin();
+        for(; it != m_buy.end(); ++it)
         {
             if(it->id == cancelId)
             {
@@ -128,7 +130,8 @@ public:
         }
         
         // search sell pricebook
-        for(auto it_ = m_sell.begin(); it_ != m_sell.end(); ++it_)
+        auto it_ = m_sell.begin();
+        for(; it_ != m_sell.end(); ++it_)
         {
             if(it_->id == cancelId)
             {
@@ -156,7 +159,8 @@ public:
         if(to == "SELL")
         {
             cout<< "modify from BUY to SELL"<<endl;
-            for(auto it = m_buy.begin(); it != m_buy.end(); ++it)
+            auto it = m_buy.begin();
+            for(; it != m_buy.end(); ++it)
             {
                 if(it->id == modifiedId)
                 {
@@ -187,7 +191,8 @@ public:
         if(to == "BUY")
         {
             cout<< "modify from SELL to BUY"<<endl;
-            for(auto it = m_sell.begin(); it != m_sell.end(); ++it)
+            auto it = m_sell.begin();
+            for(; it != m_sell.end(); ++it)
             {
                 if(it->id == modifiedId)
                 {
@@ -266,6 +271,7 @@ protected:
         // Use map to sorted & merged the result
         map<price, quantity> sell;
         map<price, quantity> buy;
+
         
         for(auto it = m_sell.begin(); it != m_sell.end(); ++it)
         {
@@ -309,62 +315,51 @@ int main() {
     
     
     MatchMachine jarvis;
-
-    // Read the first col and switch by the cases.
-    vector<string> op;
-    op.resize(5);
-    cin >> op[0];
-    if(op[0] == "BUY")
+    string line;
+    while(std::getline(cin, line))
     {
-        cin >> op[1];
-        cin >> op[2];
-        cin >> op[3];
-        cin >> op[4];
-        if(jarvis.addBuyOrder(op))
+        // Read the first col and switch by the cases.
+        istringstream iss(line);
+        vector<string> op{std::istream_iterator<string>(iss), {}};
+        if(op[0] == "BUY")
         {
+            if(jarvis.addBuyOrder(op))
+            {
+                jarvis.checkMatches();
+            }
+            else
+            {
+                cout<<"[Warning]: non-unique order id for BUY pricebook"<<endl;
+            }
+        }
+
+        if(op[0] == "SELL")
+        {
+            if(jarvis.addSellOrder(op))
+            {
+                jarvis.checkMatches();
+            }
+            else
+            {
+                cout<<"[Warning]: non-unique order id for SELL pricebook"<<endl;
+            }
+        }
+
+        if(op[0] == "CANCEL")
+        {
+            jarvis.cancelOrder(op);
+        }
+
+        if(op[0] == "MODIFY")
+        {
+            jarvis.modifyOrder(op);
             jarvis.checkMatches();
         }
-        else
+
+        if(op[0] == "PRINT")
         {
-            cout<<"[Warning]: non-unique order id for BUY pricebook"<<endl;
+            jarvis.print();
         }
-    }
-
-    if(op[0] == "SELL")
-    {
-        cin >> op[1];
-        cin >> op[2];
-        cin >> op[3];
-        cin >> op[4];
-        if(jarvis.addSellOrder(op))
-        {
-            jarvis.checkMatches();
-        }
-        else
-        {
-            cout<<"[Warning]: non-unique order id for SELL pricebook"<<endl;
-        }
-    }
-
-    if(op[0] == "CANCEL")
-    {
-        cin >> op[1];
-        jarvis.cancelOrder(op);
-    }
-
-    if(op[0] == "MODIFY")
-    {
-        cin >> op[1];
-        cin >> op[2];
-        cin >> op[3];
-        cin >> op[4];
-        jarvis.modifyOrder(op);
-        jarvis.checkMatches();
-    }
-
-    if(op[0] == "PRINT")
-    {
-        jarvis.print();
     }
 
    
