@@ -117,8 +117,7 @@ public:
     {
         string cancelId = op[1]; // second col is the order id
         // search buy pricebook
-        auto it = m_buy.begin();
-        for(; it != m_buy.end(); ++it)
+        for(auto it = m_buy.begin(); it != m_buy.end(); ++it)
         {
             if(it->id == cancelId)
             {
@@ -129,8 +128,7 @@ public:
         }
         
         // search sell pricebook
-        auto it_ = m_sell.begin();
-        for(; it_ != m_sell.end(); ++it_)
+        for(auto it_ = m_sell.begin(); it_ != m_sell.end(); ++it_)
         {
             if(it_->id == cancelId)
             {
@@ -158,8 +156,7 @@ public:
         if(to == "SELL")
         {
             cout<< "modify from BUY to SELL"<<endl;
-            auto it = m_buy.begin();
-            for(; it != m_buy.end(); ++it)
+            for(auto it = m_buy.begin(); it != m_buy.end(); ++it)
             {
                 if(it->id == modifiedId)
                 {
@@ -190,8 +187,7 @@ public:
         if(to == "BUY")
         {
             cout<< "modify from SELL to BUY"<<endl;
-            auto it = m_sell.begin();
-            for(; it != m_sell.end(); ++it)
+            for(auto it = m_sell.begin(); it != m_sell.end(); ++it)
             {
                 if(it->id == modifiedId)
                 {
@@ -270,7 +266,6 @@ protected:
         // Use map to sorted & merged the result
         map<price, quantity> sell;
         map<price, quantity> buy;
-
         
         for(auto it = m_sell.begin(); it != m_sell.end(); ++it)
         {
@@ -315,7 +310,6 @@ int main() {
     
     MatchMachine jarvis;
 
-    
     // Read the first col and switch by the cases.
     vector<string> op;
     op.resize(5);
