@@ -145,8 +145,13 @@ public:
     }
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    void modifyOrder(vector<string>& op)
+    
+    // TBD: What if partially modify the quantity? 
+    // 1. Check the valid id
+    // 2. Check not IOC
+    bool modifyOrder(vector<string>& op)
     {
+
         string modifiedId = op[1]; // second col is the wanted modified id
         string to = op[2]; // MODIFY order1 SELL 1000 10, the op[2] reveals where to search
         int price = stoi(op[3]);
@@ -163,8 +168,20 @@ public:
                 if(it->id == modifiedId)
                 {
                     operation = it->operation; // buffer the operation
+                    // check IOC
+                    if(operation == "IOC")
+                    {
+                        if(VERBOSE) cout<<"cannot modify IOC operation";
+                        return false;
+                    }
                     m_buy.erase(it);
                     if(VERBOSE) cout<<"erase from BUY pricebook"<<endl;
+                    break;
+                }
+                if(it == m_buy.end())
+                {
+                    if(VERBOSE) cout<<"cannot find the specified order id"<<endl;
+                    return false;
                 }
             }
             
@@ -184,7 +201,7 @@ public:
                 cout<<"quantity="<<temp.quantity<<endl;
             }
             
-            return;
+            return ture;
             
         }
         
@@ -197,8 +214,20 @@ public:
                 if(it->id == modifiedId)
                 {
                     operation = it->operation; // buffer the operation
+                    if(operation == "IOC")
+                    {
+                        if(VERBOSE) cout<<"cannot modify the IOC operation"<<endl;
+                        return false;
+                    }
                     m_sell.erase(it);
                     if(VERBOSE) cout<<"erase from SELL pricebook"<<endl;
+                    break;
+                }
+
+                if(it == m_sell.end())
+                {
+                    if(VERBOSE) cout<<"cannot find the specified order id"<<endl;
+                    return false;
                 }
             }
             
@@ -217,12 +246,12 @@ public:
                 cout<<"price="<<temp.price<<endl;
                 cout<<"quantity="<<temp.quantity<<endl;
             }
-            return;
+            return true;
         }
         
         // No return before
         if(VERBOSE) cout<<"[Warning]: invalid modification operation!"<<endl;
-        return;
+        return false;
     }
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -248,6 +277,7 @@ protected:
         bool res = false;
         // Boundary condition check
         if(m_buy.size() == 0 || m_sell.size() == 0) return res;
+
 
         
 
