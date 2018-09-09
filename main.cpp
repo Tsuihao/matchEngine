@@ -201,7 +201,7 @@ public:
                 cout<<"quantity="<<temp.quantity<<endl;
             }
             
-            return ture;
+            return true;
             
         }
         
@@ -255,10 +255,10 @@ public:
     }
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    void checkMatches()
+    void checkMatches(const string& target)
     {
-        if(isTrade())
-            printMatches();
+        if(target == "BUY") checkBuy();
+        if(target == "SELL") checkSell();
     }
 
 
@@ -270,28 +270,25 @@ public:
     
 protected:
     /*
-     * Check the matched trades in buy and sell pricebooks
+     * Check the matched trades in buy pricebooks
+     * Log out the trade information
      */
-    bool isTrade()
+    void checkBuy()
     {
-        bool res = false;
-        // Boundary condition check
-        if(m_buy.size() == 0 || m_sell.size() == 0) return res;
-
-
         
 
-
-        return res;
     }
-    
+
     /*
-     * Print out the matched trades
+     * Check the matched trades in sell pricebooks
+     * Log out the trade information
      */
-    void printMatches()
+    void checkSell()
     {
-        
+
+
     }
+
     /*
      * Print out the sorted price books
      */
@@ -344,8 +341,7 @@ private:
 
 
 int main() {
-    
-    
+ 
     MatchMachine jarvis;
     string line;
     while(std::getline(cin, line))
@@ -357,7 +353,7 @@ int main() {
         {
             if(jarvis.addBuyOrder(op))
             {
-                jarvis.checkMatches();
+                jarvis.checkMatches("SELL");
             }
             else
             {
@@ -369,7 +365,7 @@ int main() {
         {
             if(jarvis.addSellOrder(op))
             {
-                jarvis.checkMatches();
+                jarvis.checkMatches("BUY");
             }
             else
             {
@@ -384,8 +380,16 @@ int main() {
 
         if(op[0] == "MODIFY")
         {
-            jarvis.modifyOrder(op);
-            jarvis.checkMatches();
+            if(jarvis.modifyOrder(op))
+            {
+                if(op[2] == "BUY") jarvis.checkMatches("SELL");
+                if(op[2] == "SELL") jarvis.checkMatches("BUY");
+            }
+            else
+            {
+                if(VERBOSE) cout<<"[Warning]: invalid MODIFY operation"<<endl;
+            }
+ 
         }
 
         if(op[0] == "PRINT")
