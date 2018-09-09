@@ -45,35 +45,69 @@ class MatchMachine
     
 public:
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    void addBuyOrder(const string& op)
+    bool addBuyOrder(const string& op)
     {
+        bool res = true;
+
         PriceBook temp;
-        cout<<"add buy order: "<<endl
-        temp.operation = op[1];
-        cout<<"Operation="<< temp.operation <<endl
-        temp.price = stoi(op[2]);
-        cout<<"Price="<<temp.price<<endl;
-        temp.quantity = stoi(op[3]);
-        cout<<"Quantity="<<temp.quantity<<endl;
         temp.id = op[4];
+
+        // first check the id is unique
+        auto it = m_buy.begin();
+        for(; it != m_buy.end(); ++it)
+        {
+            if(it->id == temp.id)
+            {
+                res = false;
+                cout<<"Duplicated Buy order id!!"<<endl;
+                return res;
+            }
+        }
+
+        temp.operation = op[1];
+        temp.price = stoi(op[2]);
+        temp.quantity = stoi(op[3]);
+
+        cout<<"add buy order: "<<endl
+        cout<<"Operation="<< temp.operation <<endl
+        cout<<"Price="<<temp.price<<endl;
+        cout<<"Quantity="<<temp.quantity<<endl;
         cout<<"Id="<<temp.id<<endl;
+
         m_buy.push_back(temp);
     }
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     void addSellOrder(const string& op)
     {
+        bool res = true;
+
         PriceBook temp;
-        cout<<"add sell order: "<<endl
-        temp.operation = op[1];
-        cout<<"Operation="<< temp.operation <<endl
-        temp.price = stoi(op[2]);
-        cout<<"Price="<<temp.price<<endl;
-        temp.quantity = stoi(op[3]);
-        cout<<"Quantity="<<temp.quantity<<endl;
         temp.id = op[4];
+
+        // first check the id is unique
+        auto it = m_sell.begin();
+        for(; it != m_sell.end(); ++it)
+        {
+            if(it->id == temp.id)
+            {
+                res = false;
+                cout<<"Duplicated SELL order id!!"<<endl;
+                return res;
+            }
+        }
+
+        temp.operation = op[1];
+        temp.price = stoi(op[2]);
+        temp.quantity = stoi(op[3]);
+
+        cout<<"add buy order: "<<endl
+        cout<<"Operation="<< temp.operation <<endl
+        cout<<"Price="<<temp.price<<endl;
+        cout<<"Quantity="<<temp.quantity<<endl;
         cout<<"Id="<<temp.id<<endl;
-        m_sell.push_back(temp);
+
+        m_buy.push_back(temp);
     }
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,7 +175,7 @@ public:
             temp.quantity = quantity;
             m_sell.push_back(temp);
             cout<<"add to SELL price book"<<endl;
-            cout<< "id ="<<temp.id<<endl;
+            cout<<"id ="<<temp.id<<endl;
             cout<<"operation="<<temp.operation<<endl;
             cout<<"price="<<temp.price<<endl;
             cout<<"quantity="<<temp.quantity<<endl;
@@ -187,10 +221,16 @@ public:
     }
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////
+    void checkMatches()
+    {
+        if(isTrade())
+            printMatches();
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
     void print()
     {
-        checkMatch();
-        printMatch();
         printedSortedBooks();
     }
     
@@ -198,24 +238,66 @@ protected:
     /*
      * Check the matched trades in buy and sell pricebooks
      */
-    bool checkMatch()
+    bool isTrade()
     {
+        bool res = false;
+        // Boundary condition check
+        if(m_buy.size() == 0 || m_sell.size() == 0) return res;
+
         
+
+
+        return res;
     }
     
     /*
      * Print out the matched trades
      */
-    bool printMatch()
+    void printMatches()
     {
         
     }
     /*
      * Print out the sorted price books
      */
-    bool printedSortedBooks()
+    void printedSortedBooks()
     {
+        typedef int price;
+        typedef int quantity;
         
+        // Use map to sorted & merged the result
+        Map<price, quantity> sell;
+        Map<price, quantity> buy;
+
+        auto it = m_sell.begin();
+        if(; it != m_sell.end(); ++it)
+        {
+            sell.insert(std::pair<price, quantity>(it->price, it->quantity));
+        }
+
+        auto it_ = m_buy.begin();
+        if(; it_ != m_buy.end(); ++it_)
+        {
+
+            buy.insert(std::pair<price, quantity>(it_->price, it_->quantity));
+        }
+
+        // The requirement want to bring the descending order!
+        cout<<"SELL:"<<endl;
+        auto it_sell = sell.rbegin();
+        for(; it_sell != sell.rend(); ++it_sell)
+        {
+            cout<<it_sell->first<<" "<<it_sell->second<<endl;
+        }
+
+        cout<<"BUY:"<<endl;
+        auto it_buy = buy.rbegin();
+        for(; it_buy != buy.rend(); ++it_buy)
+        {
+            cout<<it_buy->first<<" "<<it_buy->second<<endl;
+        }
+
+        return;
     }
     
 private:
@@ -243,7 +325,14 @@ int main() {
             cin >> op[2];
             cin >> op[3];
             cin >> op[4];
-            jarvis.addBuyOrder(op);
+            if(jarvis.addBuyOrder(op))
+            {
+               jarvis.checkMatches();
+            }
+            else
+            {
+                cout<<"[Warning]: non-unique order id for BUY pricebook"<<endl;
+            }
             break;
 
         case "SELL":
@@ -251,7 +340,14 @@ int main() {
             cin >> op[2];
             cin >> op[3];
             cin >> op[4];
-            jarvis.addSellOrder(op);
+            if(jarvis.addSellOrder(op))
+            {
+               jarvis.checkMatches();
+            }
+            else
+            {
+                cout<<"[Warning]: non-unique order id for SELL pricebook"<<endl;
+            }
             break;
 
         case "CANCEL":
@@ -265,6 +361,7 @@ int main() {
             cin >> op[3];
             cin >> op[4];
             javis.modifyOrder(op);
+            jarvis.checkMatches();
             break;
 
         case "PRINT":
@@ -274,15 +371,7 @@ int main() {
         default:
             cout<<"[Warning]: invalid input"<<endl;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
+   
     return 0;
     
     
