@@ -45,7 +45,7 @@ class MatchMachine
     
 public:
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    bool addBuyOrder(string& op)
+    bool addBuyOrder(vector<string>& op)
     {
         bool res = true;
 
@@ -79,7 +79,7 @@ public:
     }
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    void addSellOrder(string& op)
+    bool addSellOrder(vector<string>& op)
     {
         bool res = true;
 
@@ -113,7 +113,7 @@ public:
     }
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    void cancelOrder(const string& op)
+    void cancelOrder(const vector<string>& op)
     {
         string cancelId = op[1]; // second col is the order id
         // search buy pricebook
@@ -145,7 +145,7 @@ public:
     }
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    void modifyOrder(string& op)
+    void modifyOrder(vector<string>& op)
     {
         string modifiedId = op[1]; // second col is the wanted modified id
         string to = op[2]; // MODIFY order1 SELL 1000 10, the op[2] reveals where to search
@@ -317,7 +317,8 @@ int main() {
 
     
     // Read the first col and switch by the cases.
-    string op[5];
+    vector<string> op;
+    op.resize(5);
     cin >> op[0];
     if(op[0] == "BUY")
     {
@@ -371,8 +372,6 @@ int main() {
     {
         jarvis.print();
     }
-
-    cout<<"[Warning]: invalid input"<<endl;
 
    
     return 0;
