@@ -45,7 +45,7 @@ class MatchMachine
     
 public:
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    bool addBuyOrder(const string& op)
+    bool addBuyOrder(string& op)
     {
         bool res = true;
 
@@ -65,20 +65,21 @@ public:
         }
 
         temp.operation = op[1];
-        temp.price = stoi(op[2]);
-        temp.quantity = stoi(op[3]);
+        temp.price = std::stoi(op[2]);
+        temp.quantity = std::stoi(op[3]);
 
-        cout<<"add buy order: "<<endl
-        cout<<"Operation="<< temp.operation <<endl
+        cout<<"add buy order: "<<endl;
+        cout<<"Operation="<< temp.operation <<endl;
         cout<<"Price="<<temp.price<<endl;
         cout<<"Quantity="<<temp.quantity<<endl;
         cout<<"Id="<<temp.id<<endl;
 
         m_buy.push_back(temp);
+        return res;
     }
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    void addSellOrder(const string& op)
+    void addSellOrder(string& op)
     {
         bool res = true;
 
@@ -101,13 +102,14 @@ public:
         temp.price = stoi(op[2]);
         temp.quantity = stoi(op[3]);
 
-        cout<<"add buy order: "<<endl
-        cout<<"Operation="<< temp.operation <<endl
+        cout<<"add buy order: "<<endl;
+        cout<<"Operation="<< temp.operation <<endl;
         cout<<"Price="<<temp.price<<endl;
         cout<<"Quantity="<<temp.quantity<<endl;
         cout<<"Id="<<temp.id<<endl;
 
         m_buy.push_back(temp);
+        return res;
     }
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,7 +145,7 @@ public:
     }
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    void modifyOrder(const string& op)
+    void modifyOrder(string& op)
     {
         string modifiedId = op[1]; // second col is the wanted modified id
         string to = op[2]; // MODIFY order1 SELL 1000 10, the op[2] reveals where to search
@@ -266,17 +268,17 @@ protected:
         typedef int quantity;
         
         // Use map to sorted & merged the result
-        Map<price, quantity> sell;
-        Map<price, quantity> buy;
+        map<price, quantity> sell;
+        map<price, quantity> buy;
 
-        auto it = m_sell.begin();
-        if(; it != m_sell.end(); ++it)
+        
+        for(auto it = m_sell.begin(); it != m_sell.end(); ++it)
         {
             sell.insert(std::pair<price, quantity>(it->price, it->quantity));
         }
 
-        auto it_ = m_buy.begin();
-        if(; it_ != m_buy.end(); ++it_)
+        
+        for(auto it_ = m_buy.begin(); it_ != m_buy.end(); ++it_)
         {
 
             buy.insert(std::pair<price, quantity>(it_->price, it_->quantity));
@@ -284,15 +286,15 @@ protected:
 
         // The requirement want to bring the descending order!
         cout<<"SELL:"<<endl;
-        auto it_sell = sell.rbegin();
-        for(; it_sell != sell.rend(); ++it_sell)
+        
+        for(auto it_sell = sell.rbegin(); it_sell != sell.rend(); ++it_sell)
         {
             cout<<it_sell->first<<" "<<it_sell->second<<endl;
         }
 
         cout<<"BUY:"<<endl;
-        auto it_buy = buy.rbegin();
-        for(; it_buy != buy.rend(); ++it_buy)
+        
+        for(auto it_buy = buy.rbegin(); it_buy != buy.rend(); ++it_buy)
         {
             cout<<it_buy->first<<" "<<it_buy->second<<endl;
         }
@@ -304,7 +306,6 @@ private:
 
     vector<PriceBook> m_sell;
     vector<PriceBook> m_buy;
-    Trader m_trader;  
 };
 
 
@@ -317,60 +318,62 @@ int main() {
     
     // Read the first col and switch by the cases.
     string op[5];
-    cin << op[0];
-    switch(op[0])
+    cin >> op[0];
+    if(op[0] == "BUY")
     {
-        case "BUY":
-            cin >> op[1];
-            cin >> op[2];
-            cin >> op[3];
-            cin >> op[4];
-            if(jarvis.addBuyOrder(op))
-            {
-               jarvis.checkMatches();
-            }
-            else
-            {
-                cout<<"[Warning]: non-unique order id for BUY pricebook"<<endl;
-            }
-            break;
-
-        case "SELL":
-            cin >> op[1];
-            cin >> op[2];
-            cin >> op[3];
-            cin >> op[4];
-            if(jarvis.addSellOrder(op))
-            {
-               jarvis.checkMatches();
-            }
-            else
-            {
-                cout<<"[Warning]: non-unique order id for SELL pricebook"<<endl;
-            }
-            break;
-
-        case "CANCEL":
-            cin >> op[1];
-            javis.cancelOrder(op);
-            break;
-
-        case "MODIFY":
-            cin >> op[1];
-            cin >> op[2];
-            cin >> op[3];
-            cin >> op[4];
-            javis.modifyOrder(op);
+        cin >> op[1];
+        cin >> op[2];
+        cin >> op[3];
+        cin >> op[4];
+        if(jarvis.addBuyOrder(op))
+        {
             jarvis.checkMatches();
-            break;
-
-        case "PRINT":
-            jarvis.print();
-            break;
-
-        default:
-            cout<<"[Warning]: invalid input"<<endl;
+        }
+        else
+        {
+            cout<<"[Warning]: non-unique order id for BUY pricebook"<<endl;
+        }
     }
+
+    if(op[0] == "SELL")
+    {
+        cin >> op[1];
+        cin >> op[2];
+        cin >> op[3];
+        cin >> op[4];
+        if(jarvis.addSellOrder(op))
+        {
+            jarvis.checkMatches();
+        }
+        else
+        {
+            cout<<"[Warning]: non-unique order id for SELL pricebook"<<endl;
+        }
+    }
+
+    if(op[0] == "CANCEL")
+    {
+        cin >> op[1];
+        jarvis.cancelOrder(op);
+    }
+
+    if(op[0] == "MODIFY")
+    {
+        cin >> op[1];
+        cin >> op[2];
+        cin >> op[3];
+        cin >> op[4];
+        jarvis.modifyOrder(op);
+        jarvis.checkMatches();
+    }
+
+    if(op[0] == "PRINT")
+    {
+        jarvis.print();
+    }
+
+    cout<<"[Warning]: invalid input"<<endl;
+
    
     return 0;
     
