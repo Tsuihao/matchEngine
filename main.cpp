@@ -22,7 +22,7 @@
 #include <algorithm>
 #include <unordered_map>
 
-# define VERBOSE true
+# define VERBOSE false
 using namespace std;
 
 /*
@@ -70,7 +70,7 @@ public:
         temp.quantity = std::stoi(op[3]);
         if(VERBOSE)
         {
-            cout<<"add buy order: "<<endl;
+            cout<<"add BUY order: "<<endl;
             cout<<"Operation="<< temp.operation <<endl;
             cout<<"Price="<<temp.price<<endl;
             cout<<"Quantity="<<temp.quantity<<endl;
@@ -104,13 +104,13 @@ public:
         temp.quantity = stoi(op[3]);
         if(VERBOSE)
         {
-            cout<<"add buy order: "<<endl;
+            cout<<"add SELL order: "<<endl;
             cout<<"Operation="<< temp.operation <<endl;
             cout<<"Price="<<temp.price<<endl;
             cout<<"Quantity="<<temp.quantity<<endl;
             cout<<"Id="<<temp.id<<endl;
         }
-        m_buy.push_back(temp);
+        m_sell.push_back(temp);
         return res;
     }
     
@@ -275,7 +275,40 @@ protected:
      */
     void checkBuy()
     {
-        
+        // boundary condition
+        if(m_buy.size() == 0) return;
+
+        for(auto it = m_buy.begin(); it != m_buy.end(); /*empty*/ ) // follow the time-order!
+        {
+            if(it->price > m_sell.back().price) // Buy price > Sell price
+            {
+                // Log out
+                int minQuantity = min(it->quantity, m_sell.back().quantity);
+
+                cout<<"TRADE "<<it->id<<" "<<it->price<<" "<<minQuantity<<" "<<m_sell.back().id<<" "<<m_sell.back().price<<" "<<minQuantity<<endl;
+
+                // Update information
+                if(it->quantity == m_sell.back().quantity)
+                {
+                    m_buy.erase(it);
+                    m_sell.pop_back();
+                }
+                else if(it->quantity > m_sell.back().quantity) // Buy amount > Sell amount
+                {
+                    it->quantity = it->quantity - m_sell.back().quantity; // update the quantity
+                    m_sell.pop_back(); // erase from sell pricebook
+                }
+                else // Sell amount > Buy amount
+                {
+                    m_sell.back().quantity = m_sell.back().quantity - it->quantity; // update the quantity
+                    m_buy.erase(it); // erase from buy pricebook
+                }
+            }
+            else
+            {
+                ++it;
+            }
+        }
 
     }
 
@@ -285,7 +318,40 @@ protected:
      */
     void checkSell()
     {
+        // boundary condition
+        if(m_sell.size() == 0) return;
 
+
+        for(auto it = m_sell.begin(); it != m_sell.end(); /*empty*/ ) // follow the time-order!
+        {
+            if(it->price < m_buy.back().price) // Sell price < Buy price
+            {
+                int minQuantity = min(it->quantity, m_buy.back().quantity);
+                // Log out
+                cout<<"TRADE "<<it->id<<" "<<it->price<<" "<<minQuantity<<" "<<m_buy.back().id<<" "<<m_buy.back().price<<" "<<minQuantity<<endl;
+
+                // Update information
+                if(it->quantity == m_buy.back().quantity)
+                {
+                    m_sell.erase(it);
+                    m_buy.pop_back();
+                }
+                else if(it->quantity > m_buy.back().quantity) // Sell amount > Buy amount
+                {
+                    it->quantity = it->quantity - m_buy.back().quantity; // update the quantity
+                    m_buy.pop_back(); // erase from buy pricebook
+                }
+                else // Buy amount > Sell amount
+                {
+                    m_buy.back().quantity = m_buy.back().quantity - it->quantity; // update the quantity
+                    m_sell.erase(it); // erase from sell pricebook
+                }
+            }
+            else
+            {
+                ++it;
+            }
+        }
 
     }
 
