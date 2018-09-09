@@ -193,7 +193,7 @@ public:
             auto it = m_sell.begin();
             for(; it != m_sell.end(); ++it)
             {
-                if(it->id = modifiedId)
+                if(it->id == modifiedId)
                 {
                     operation = it->operation; // buffer the operation
                     m_sell.erase(it);

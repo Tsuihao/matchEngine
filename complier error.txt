@@ -1,0 +1,156 @@
+solution.cc: In member function ‘bool MatchMachine::addBuyOrder(std::__cxx11::string&)’:
+solution.cc:68:37: error: no matching function for call to ‘stoi(__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type&)’
+         temp.price = std::stoi(op[2]);
+                                     ^
+In file included from /usr/include/c++/7/string:52:0,
+                 from /usr/include/c++/7/stdexcept:39,
+                 from /usr/include/c++/7/array:39,
+                 from /usr/include/c++/7/tuple:39,
+                 from /usr/include/c++/7/bits/stl_map.h:63,
+                 from /usr/include/c++/7/map:61,
+                 from solution.cc:1:
+/usr/include/c++/7/bits/basic_string.h:6359:3: note: candidate: int std::__cxx11::stoi(const string&, std::size_t*, int)
+   stoi(const string& __str, size_t* __idx = 0, int __base = 10)
+   ^~~~
+/usr/include/c++/7/bits/basic_string.h:6359:3: note:   no known conversion for argument 1 from ‘__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type {aka char}’ to ‘const string& {aka const std::__cxx11::basic_string<char>&}’
+/usr/include/c++/7/bits/basic_string.h:6465:3: note: candidate: int std::__cxx11::stoi(const wstring&, std::size_t*, int)
+   stoi(const wstring& __str, size_t* __idx = 0, int __base = 10)
+   ^~~~
+/usr/include/c++/7/bits/basic_string.h:6465:3: note:   no known conversion for argument 1 from ‘__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type {aka char}’ to ‘const wstring& {aka const std::__cxx11::basic_string<wchar_t>&}’
+solution.cc:69:40: error: no matching function for call to ‘stoi(__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type&)’
+         temp.quantity = std::stoi(op[3]);
+                                        ^
+In file included from /usr/include/c++/7/string:52:0,
+                 from /usr/include/c++/7/stdexcept:39,
+                 from /usr/include/c++/7/array:39,
+                 from /usr/include/c++/7/tuple:39,
+                 from /usr/include/c++/7/bits/stl_map.h:63,
+                 from /usr/include/c++/7/map:61,
+                 from solution.cc:1:
+/usr/include/c++/7/bits/basic_string.h:6359:3: note: candidate: int std::__cxx11::stoi(const string&, std::size_t*, int)
+   stoi(const string& __str, size_t* __idx = 0, int __base = 10)
+   ^~~~
+/usr/include/c++/7/bits/basic_string.h:6359:3: note:   no known conversion for argument 1 from ‘__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type {aka char}’ to ‘const string& {aka const std::__cxx11::basic_string<char>&}’
+/usr/include/c++/7/bits/basic_string.h:6465:3: note: candidate: int std::__cxx11::stoi(const wstring&, std::size_t*, int)
+   stoi(const wstring& __str, size_t* __idx = 0, int __base = 10)
+   ^~~~
+/usr/include/c++/7/bits/basic_string.h:6465:3: note:   no known conversion for argument 1 from ‘__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type {aka char}’ to ‘const wstring& {aka const std::__cxx11::basic_string<wchar_t>&}’
+solution.cc: In member function ‘void MatchMachine::addSellOrder(std::__cxx11::string&)’:
+solution.cc:97:24: error: return-statement with a value, in function returning 'void' [-fpermissive]
+                 return res;
+                        ^~~
+solution.cc:102:32: error: no matching function for call to ‘stoi(__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type&)’
+         temp.price = stoi(op[2]);
+                                ^
+In file included from /usr/include/c++/7/string:52:0,
+                 from /usr/include/c++/7/stdexcept:39,
+                 from /usr/include/c++/7/array:39,
+                 from /usr/include/c++/7/tuple:39,
+                 from /usr/include/c++/7/bits/stl_map.h:63,
+                 from /usr/include/c++/7/map:61,
+                 from solution.cc:1:
+/usr/include/c++/7/bits/basic_string.h:6359:3: note: candidate: int std::__cxx11::stoi(const string&, std::size_t*, int)
+   stoi(const string& __str, size_t* __idx = 0, int __base = 10)
+   ^~~~
+/usr/include/c++/7/bits/basic_string.h:6359:3: note:   no known conversion for argument 1 from ‘__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type {aka char}’ to ‘const string& {aka const std::__cxx11::basic_string<char>&}’
+/usr/include/c++/7/bits/basic_string.h:6465:3: note: candidate: int std::__cxx11::stoi(const wstring&, std::size_t*, int)
+   stoi(const wstring& __str, size_t* __idx = 0, int __base = 10)
+   ^~~~
+/usr/include/c++/7/bits/basic_string.h:6465:3: note:   no known conversion for argument 1 from ‘__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type {aka char}’ to ‘const wstring& {aka const std::__cxx11::basic_string<wchar_t>&}’
+solution.cc:103:35: error: no matching function for call to ‘stoi(__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type&)’
+         temp.quantity = stoi(op[3]);
+                                   ^
+In file included from /usr/include/c++/7/string:52:0,
+                 from /usr/include/c++/7/stdexcept:39,
+                 from /usr/include/c++/7/array:39,
+                 from /usr/include/c++/7/tuple:39,
+                 from /usr/include/c++/7/bits/stl_map.h:63,
+                 from /usr/include/c++/7/map:61,
+                 from solution.cc:1:
+/usr/include/c++/7/bits/basic_string.h:6359:3: note: candidate: int std::__cxx11::stoi(const string&, std::size_t*, int)
+   stoi(const string& __str, size_t* __idx = 0, int __base = 10)
+   ^~~~
+/usr/include/c++/7/bits/basic_string.h:6359:3: note:   no known conversion for argument 1 from ‘__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type {aka char}’ to ‘const string& {aka const std::__cxx11::basic_string<char>&}’
+/usr/include/c++/7/bits/basic_string.h:6465:3: note: candidate: int std::__cxx11::stoi(const wstring&, std::size_t*, int)
+   stoi(const wstring& __str, size_t* __idx = 0, int __base = 10)
+   ^~~~
+/usr/include/c++/7/bits/basic_string.h:6465:3: note:   no known conversion for argument 1 from ‘__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type {aka char}’ to ‘const wstring& {aka const std::__cxx11::basic_string<wchar_t>&}’
+solution.cc:112:16: error: return-statement with a value, in function returning 'void' [-fpermissive]
+         return res;
+                ^~~
+solution.cc: In member function ‘void MatchMachine::cancelOrder(const string&)’:
+solution.cc:118:31: error: conversion from ‘const value_type {aka const char}’ to non-scalar type ‘std::__cxx11::string {aka std::__cxx11::basic_string<char>}’ requested
+         string cancelId = op[1]; // second col is the order id
+                               ^
+solution.cc: In member function ‘void MatchMachine::modifyOrder(std::__cxx11::string&)’:
+solution.cc:150:33: error: conversion from ‘__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type {aka char}’ to non-scalar type ‘std::__cxx11::string {aka std::__cxx11::basic_string<char>}’ requested
+         string modifiedId = op[1]; // second col is the wanted modified id
+                                 ^
+solution.cc:151:25: error: conversion from ‘__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type {aka char}’ to non-scalar type ‘std::__cxx11::string {aka std::__cxx11::basic_string<char>}’ requested
+         string to = op[2]; // MODIFY order1 SELL 1000 10, the op[2] reveals where to search
+                         ^
+solution.cc:152:31: error: no matching function for call to ‘stoi(__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type&)’
+         int price = stoi(op[3]);
+                               ^
+In file included from /usr/include/c++/7/string:52:0,
+                 from /usr/include/c++/7/stdexcept:39,
+                 from /usr/include/c++/7/array:39,
+                 from /usr/include/c++/7/tuple:39,
+                 from /usr/include/c++/7/bits/stl_map.h:63,
+                 from /usr/include/c++/7/map:61,
+                 from solution.cc:1:
+/usr/include/c++/7/bits/basic_string.h:6359:3: note: candidate: int std::__cxx11::stoi(const string&, std::size_t*, int)
+   stoi(const string& __str, size_t* __idx = 0, int __base = 10)
+   ^~~~
+/usr/include/c++/7/bits/basic_string.h:6359:3: note:   no known conversion for argument 1 from ‘__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type {aka char}’ to ‘const string& {aka const std::__cxx11::basic_string<char>&}’
+/usr/include/c++/7/bits/basic_string.h:6465:3: note: candidate: int std::__cxx11::stoi(const wstring&, std::size_t*, int)
+   stoi(const wstring& __str, size_t* __idx = 0, int __base = 10)
+   ^~~~
+/usr/include/c++/7/bits/basic_string.h:6465:3: note:   no known conversion for argument 1 from ‘__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type {aka char}’ to ‘const wstring& {aka const std::__cxx11::basic_string<wchar_t>&}’
+solution.cc:153:34: error: no matching function for call to ‘stoi(__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type&)’
+         int quantity = stoi(op[4]);
+                                  ^
+In file included from /usr/include/c++/7/string:52:0,
+                 from /usr/include/c++/7/stdexcept:39,
+                 from /usr/include/c++/7/array:39,
+                 from /usr/include/c++/7/tuple:39,
+                 from /usr/include/c++/7/bits/stl_map.h:63,
+                 from /usr/include/c++/7/map:61,
+                 from solution.cc:1:
+/usr/include/c++/7/bits/basic_string.h:6359:3: note: candidate: int std::__cxx11::stoi(const string&, std::size_t*, int)
+   stoi(const string& __str, size_t* __idx = 0, int __base = 10)
+   ^~~~
+/usr/include/c++/7/bits/basic_string.h:6359:3: note:   no known conversion for argument 1 from ‘__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type {aka char}’ to ‘const string& {aka const std::__cxx11::basic_string<char>&}’
+/usr/include/c++/7/bits/basic_string.h:6465:3: note: candidate: int std::__cxx11::stoi(const wstring&, std::size_t*, int)
+   stoi(const wstring& __str, size_t* __idx = 0, int __base = 10)
+   ^~~~
+/usr/include/c++/7/bits/basic_string.h:6465:3: note:   no known conversion for argument 1 from ‘__gnu_cxx::__alloc_traits<std::allocator<char> >::value_type {aka char}’ to ‘const wstring& {aka const std::__cxx11::basic_string<wchar_t>&}’
+solution.cc: In function ‘int main()’:
+solution.cc:328:33: error: no matching function for call to ‘MatchMachine::addBuyOrder(std::__cxx11::string [5])’
+         if(jarvis.addBuyOrder(op))
+                                 ^
+solution.cc:48:10: note: candidate: bool MatchMachine::addBuyOrder(std::__cxx11::string&)
+     bool addBuyOrder(string& op)
+          ^~~~~~~~~~~
+solution.cc:48:10: note:   no known conversion for argument 1 from ‘std::__cxx11::string [5] {aka std::__cxx11::basic_string<char> [5]}’ to ‘std::__cxx11::string& {aka std::__cxx11::basic_string<char>&}’
+solution.cc:344:34: error: no matching function for call to ‘MatchMachine::addSellOrder(std::__cxx11::string [5])’
+         if(jarvis.addSellOrder(op))
+                                  ^
+solution.cc:82:10: note: candidate: void MatchMachine::addSellOrder(std::__cxx11::string&)
+     void addSellOrder(string& op)
+          ^~~~~~~~~~~~
+solution.cc:82:10: note:   no known conversion for argument 1 from ‘std::__cxx11::string [5] {aka std::__cxx11::basic_string<char> [5]}’ to ‘std::__cxx11::string& {aka std::__cxx11::basic_string<char>&}’
+solution.cc:357:30: error: no matching function for call to ‘MatchMachine::cancelOrder(std::__cxx11::string [5])’
+         jarvis.cancelOrder(op);
+                              ^
+solution.cc:116:10: note: candidate: void MatchMachine::cancelOrder(const string&)
+     void cancelOrder(const string& op)
+          ^~~~~~~~~~~
+solution.cc:116:10: note:   no known conversion for argument 1 from ‘std::__cxx11::string [5] {aka std::__cxx11::basic_string<char> [5]}’ to ‘const string& {aka const std::__cxx11::basic_string<char>&}’
+solution.cc:366:30: error: no matching function for call to ‘MatchMachine::modifyOrder(std::__cxx11::string [5])’
+         jarvis.modifyOrder(op);
+                              ^
+solution.cc:148:10: note: candidate: void MatchMachine::modifyOrder(std::__cxx11::string&)
+     void modifyOrder(string& op)
+          ^~~~~~~~~~~
+solution.cc:148:10: note:   no known conversion for argument 1 from ‘std::__cxx11::string [5] {aka std::__cxx11::basic_string<char> [5]}’ to ‘std::__cxx11::string& {aka std::__cxx11::basic_string<char>&}’
