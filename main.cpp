@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <unordered_map>
 
+# define VERBOSE true
 using namespace std;
 
 /*
@@ -54,13 +55,12 @@ public:
         temp.id = op[4];
 
         // first check the id is unique
-        auto it = m_buy.begin();
-        for(; it != m_buy.end(); ++it)
+        for(auto it = m_buy.begin(); it != m_buy.end(); ++it)
         {
             if(it->id == temp.id)
             {
                 res = false;
-                cout<<"Duplicated Buy order id!!"<<endl;
+                if(VERBOSE) cout<<"Duplicated Buy order id!!"<<endl;
                 return res;
             }
         }
@@ -68,13 +68,14 @@ public:
         temp.operation = op[1];
         temp.price = std::stoi(op[2]);
         temp.quantity = std::stoi(op[3]);
-
-        cout<<"add buy order: "<<endl;
-        cout<<"Operation="<< temp.operation <<endl;
-        cout<<"Price="<<temp.price<<endl;
-        cout<<"Quantity="<<temp.quantity<<endl;
-        cout<<"Id="<<temp.id<<endl;
-
+        if(VERBOSE)
+        {
+            cout<<"add buy order: "<<endl;
+            cout<<"Operation="<< temp.operation <<endl;
+            cout<<"Price="<<temp.price<<endl;
+            cout<<"Quantity="<<temp.quantity<<endl;
+            cout<<"Id="<<temp.id<<endl;
+        }
         m_buy.push_back(temp);
         return res;
     }
@@ -88,13 +89,12 @@ public:
         temp.id = op[4];
 
         // first check the id is unique
-        auto it = m_sell.begin();
-        for(; it != m_sell.end(); ++it)
+        for(auto it = m_sell.begin(); it != m_sell.end(); ++it)
         {
             if(it->id == temp.id)
             {
                 res = false;
-                cout<<"Duplicated SELL order id!!"<<endl;
+                if(VERBOSE) cout<<"Duplicated SELL order id!!"<<endl;
                 return res;
             }
         }
@@ -102,13 +102,14 @@ public:
         temp.operation = op[1];
         temp.price = stoi(op[2]);
         temp.quantity = stoi(op[3]);
-
-        cout<<"add buy order: "<<endl;
-        cout<<"Operation="<< temp.operation <<endl;
-        cout<<"Price="<<temp.price<<endl;
-        cout<<"Quantity="<<temp.quantity<<endl;
-        cout<<"Id="<<temp.id<<endl;
-
+        if(VERBOSE)
+        {
+            cout<<"add buy order: "<<endl;
+            cout<<"Operation="<< temp.operation <<endl;
+            cout<<"Price="<<temp.price<<endl;
+            cout<<"Quantity="<<temp.quantity<<endl;
+            cout<<"Id="<<temp.id<<endl;
+        }
         m_buy.push_back(temp);
         return res;
     }
@@ -118,31 +119,29 @@ public:
     {
         string cancelId = op[1]; // second col is the order id
         // search buy pricebook
-        auto it = m_buy.begin();
-        for(; it != m_buy.end(); ++it)
+        for(auto it = m_buy.begin(); it != m_buy.end(); ++it)
         {
             if(it->id == cancelId)
             {
                 m_buy.erase(it);
-                cout<<"cancel id in buy pricebook"<<endl;
+                if(VERBOSE) cout<<"cancel id in buy pricebook"<<endl;
                 return; // save time
             }
         }
         
         // search sell pricebook
-        auto it_ = m_sell.begin();
-        for(; it_ != m_sell.end(); ++it_)
+        for(auto it_ = m_sell.begin(); it_ != m_sell.end(); ++it_)
         {
             if(it_->id == cancelId)
             {
                 m_sell.erase(it_);
-                cout<<"cancel id in sell pricebook"<<endl;
+                if(VERBOSE) cout<<"cancel id in sell pricebook"<<endl;
                 return;
             }
         }
         
         // No return before!
-        cout<<"[Warning]: no matched id is found! invalid cancel id "<<endl;
+        if(VERBOSE) cout<<"[Warning]: no matched id is found! invalid cancel id "<<endl;
     }
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,15 +157,14 @@ public:
         // search in buy priceBook
         if(to == "SELL")
         {
-            cout<< "modify from BUY to SELL"<<endl;
-            auto it = m_buy.begin();
-            for(; it != m_buy.end(); ++it)
+            if(VERBOSE) cout<< "modify from BUY to SELL"<<endl;
+            for(auto it = m_buy.begin(); it != m_buy.end(); ++it)
             {
                 if(it->id == modifiedId)
                 {
                     operation = it->operation; // buffer the operation
                     m_buy.erase(it);
-                    cout<<"erase from BUY pricebook"<<endl;
+                    if(VERBOSE) cout<<"erase from BUY pricebook"<<endl;
                 }
             }
             
@@ -177,11 +175,14 @@ public:
             temp.price = price;
             temp.quantity = quantity;
             m_sell.push_back(temp);
-            cout<<"add to SELL price book"<<endl;
-            cout<<"id ="<<temp.id<<endl;
-            cout<<"operation="<<temp.operation<<endl;
-            cout<<"price="<<temp.price<<endl;
-            cout<<"quantity="<<temp.quantity<<endl;
+            if(VERBOSE)
+            {
+                cout<<"add to SELL price book"<<endl;
+                cout<<"id ="<<temp.id<<endl;
+                cout<<"operation="<<temp.operation<<endl;
+                cout<<"price="<<temp.price<<endl;
+                cout<<"quantity="<<temp.quantity<<endl;
+            }
             
             return;
             
@@ -190,15 +191,14 @@ public:
         // search in the sell priceBook
         if(to == "BUY")
         {
-            cout<< "modify from SELL to BUY"<<endl;
-            auto it = m_sell.begin();
-            for(; it != m_sell.end(); ++it)
+            if(VERBOSE) cout<< "modify from SELL to BUY"<<endl;
+            for(auto it = m_sell.begin(); it != m_sell.end(); ++it)
             {
                 if(it->id == modifiedId)
                 {
                     operation = it->operation; // buffer the operation
                     m_sell.erase(it);
-                    cout<<"erase from SELL pricebook"<<endl;
+                    if(VERBOSE) cout<<"erase from SELL pricebook"<<endl;
                 }
             }
             
@@ -209,17 +209,19 @@ public:
             temp.price = price;
             temp.quantity = quantity;
             m_buy.push_back(temp);
-            cout<<"add to buy price book"<<endl;
-            cout<< "id ="<<temp.id<<endl;
-            cout<<"operation="<<temp.operation<<endl;
-            cout<<"price="<<temp.price<<endl;
-            cout<<"quantity="<<temp.quantity<<endl;
-            
+            if(VERBOSE)
+            {
+                cout<<"add to buy price book"<<endl;
+                cout<< "id ="<<temp.id<<endl;
+                cout<<"operation="<<temp.operation<<endl;
+                cout<<"price="<<temp.price<<endl;
+                cout<<"quantity="<<temp.quantity<<endl;
+            }
             return;
         }
         
         // No return before
-        cout<<"[Warning]: invalid modification operation!"<<endl;
+        if(VERBOSE) cout<<"[Warning]: invalid modification operation!"<<endl;
         return;
     }
     
@@ -329,7 +331,7 @@ int main() {
             }
             else
             {
-                cout<<"[Warning]: non-unique order id for BUY pricebook"<<endl;
+                if(VERBOSE) cout<<"[Warning]: non-unique order id for BUY pricebook"<<endl;
             }
         }
 
@@ -341,7 +343,7 @@ int main() {
             }
             else
             {
-                cout<<"[Warning]: non-unique order id for SELL pricebook"<<endl;
+                if(VERBOSE) cout<<"[Warning]: non-unique order id for SELL pricebook"<<endl;
             }
         }
 
