@@ -276,9 +276,18 @@ protected:
     void checkBuy()
     {
         // boundary condition
-        if(m_buy.size() == 0) return;
+        if(m_buy.size() == 0)
+        {
+            if(m_sell.back().operation == "IOC")
+            {
+                if(VERBOSE) cout<<"cancel the non-matched IOC query!"<<endl;
+                m_sell.pop_back();
+            }      
+            return;
+        }
 
-        for(auto it = m_buy.begin(); it != m_buy.end(); /*empty*/ ) // follow the time-order!
+        auto it = m_buy.begin();
+        for(; it != m_buy.end(); /*empty*/ ) // follow the time-order!
         {
             if(it->price > m_sell.back().price) // Buy price > Sell price
             {
@@ -300,7 +309,15 @@ protected:
                 }
                 else // Sell amount > Buy amount
                 {
-                    m_sell.back().quantity = m_sell.back().quantity - it->quantity; // update the quantity
+                    if(m_sell.back().operation == "IOC")  // Req: If IOC is partially matches, cancel the rest.
+                    {
+                        if(VERBOSE) cout<<"cancel the PARTIALLY non-matched IOC query!"<<endl;
+                        m_sell.pop_back();
+                    }
+                    else
+                    {
+                        m_sell.back().quantity = m_sell.back().quantity - it->quantity; // update the quantity
+                    }
                     m_buy.erase(it); // erase from buy pricebook
                 }
             }
@@ -308,6 +325,13 @@ protected:
             {
                 ++it;
             }
+        }
+
+        // Req: If IOC can not be traded right away -> cancel it
+        if(it == m_buy.end() && m_sell.back().operation == "IOC")
+        {
+            if(VERBOSE) cout<<"cancel the non-matched IOC query!"<<endl;
+            m_sell.pop_back();
         }
 
     }
@@ -319,10 +343,19 @@ protected:
     void checkSell()
     {
         // boundary condition
-        if(m_sell.size() == 0) return;
+        if(m_sell.size() == 0)
+        {
+            
+            if(m_buy.back().operation == "IOC")
+            {
+                if(VERBOSE) cout<<"cancel the non-matched IOC query!"<<endl;
+                m_buy.pop_back();
+            }
+            return;           
+        }
 
-
-        for(auto it = m_sell.begin(); it != m_sell.end(); /*empty*/ ) // follow the time-order!
+        auto it = m_sell.begin();
+        for(; it != m_sell.end(); /*empty*/ ) // follow the time-order!
         {
             if(it->price < m_buy.back().price) // Sell price < Buy price
             {
@@ -343,7 +376,16 @@ protected:
                 }
                 else // Buy amount > Sell amount
                 {
-                    m_buy.back().quantity = m_buy.back().quantity - it->quantity; // update the quantity
+                    if(m_buy.back().operation == "IOC")
+                    {
+                        if(VERBOSE) cout<<"cancel the PARTIALLY non-matched IOC query!"<<endl;
+                        m_buy.pop_back();  // Req: If IOC is partially matches, cancel the rest.
+                        
+                    }
+                    else
+                    {
+                        m_buy.back().quantity = m_buy.back().quantity - it->quantity; // update the quantity
+                    }
                     m_sell.erase(it); // erase from sell pricebook
                 }
             }
@@ -351,6 +393,13 @@ protected:
             {
                 ++it;
             }
+        }
+
+        // Req: If IOC can not be traded right away -> cancel it
+        if(it == m_sell.end() && m_buy.back().operation == "IOC")
+        {
+            if(VERBOSE) cout<<"cancel the non-matched IOC query!"<<endl;
+            m_buy.pop_back();
         }
 
     }
