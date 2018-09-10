@@ -159,12 +159,13 @@ public:
         string operation; 
         
         
-        // search in buy priceBook
+        // search in both buy & sell priceBook
         if(to == "SELL")
         {
+            bool isFound = false;
             if(VERBOSE) cout<< "modify from BUY to SELL"<<endl;
-            auto it = m_buy.begin();
-            for(; it != m_buy.end(); ++it)
+            // search in buy
+            for(auto it = m_buy.begin(); it != m_buy.end(); ++it)
             {
                 if(it->id == modifiedId)
                 {
@@ -177,42 +178,68 @@ public:
                     }
                     m_buy.erase(it);
                     if(VERBOSE) cout<<"erase from BUY pricebook"<<endl;
+                    isFound = true;
                     break;
                 }
 
             }
-            if(it == m_buy.end())
+
+            if(!isFound)
             {
-                if(VERBOSE) cout<<"cannot find the specified order id"<<endl;
+                for(auto it = m_sell.begin(); it != m_sell.end(); ++it)
+                {
+
+                    if(it->id == modifiedId)
+                    {
+                        operation = it->operation; // buffer the operation
+                        if(operation == "IOC")
+                        {
+                            if(VERBOSE) cout<< "cannot modify IOC operation";
+                            return false;
+                        }
+                        m_sell.erase(it);
+                        if(VERBOSE) cout<<"erase from SELL pricebook"<<endl;
+                        isFound = true;
+                        break;
+                    }
+                }
+            }
+            if(isFound)
+            {
+                // add to sell book
+                PriceBook temp;
+                temp.id = modifiedId;
+                temp.operation = operation;
+                temp.price = price;
+                temp.quantity = quantity;
+                m_sell.push_back(temp);
+                if(VERBOSE)
+                {
+                    cout<<"add to SELL price book"<<endl;
+                    cout<<"id ="<<temp.id<<endl;
+                    cout<<"operation="<<temp.operation<<endl;
+                    cout<<"price="<<temp.price<<endl;
+                    cout<<"quantity="<<temp.quantity<<endl;
+                }
+
+                return true;
+            }
+            else
+            {
+                if(VERBOSE) cout<<"cannot find the specified ID to modify!"<<endl;
                 return false;
             }
-            
-            // add to sell book
-            PriceBook temp;
-            temp.id = modifiedId;
-            temp.operation = operation;
-            temp.price = price;
-            temp.quantity = quantity;
-            m_sell.push_back(temp);
-            if(VERBOSE)
-            {
-                cout<<"add to SELL price book"<<endl;
-                cout<<"id ="<<temp.id<<endl;
-                cout<<"operation="<<temp.operation<<endl;
-                cout<<"price="<<temp.price<<endl;
-                cout<<"quantity="<<temp.quantity<<endl;
-            }
-            
-            return true;
+
             
         }
         
-        // search in the sell priceBook
+        // search in both buy and sell priceBook
         if(to == "BUY")
         {
-            if(VERBOSE) cout<< "modify from SELL to BUY"<<endl;
-            auto it = m_sell.begin();
-            for(; it != m_sell.end(); ++it)
+            bool isFound = false;
+            if(VERBOSE) cout<< "modify from SELL to BUY"<<endl; 
+            // search in sell price book
+            for(auto it = m_sell.begin(); it != m_sell.end(); ++it)
             {
                 if(it->id == modifiedId)
                 {
@@ -223,38 +250,59 @@ public:
                         return false;
                     }
                     m_sell.erase(it);
+                    isFound = true;
                     if(VERBOSE) cout<<"erase from SELL pricebook"<<endl;
                     break;
                 }
 
             }
 
-            if(it == m_sell.end())
+            // search in buy pricebook
+            if(!isFound)
             {
-                if(VERBOSE) cout<<"cannot find the specified order id"<<endl;
-                return false;
+                for(auto it = m_buy.begin(); it != m_buy.end(); ++it)
+                {
+                    if(it->id == modifiedId)
+                    {
+                        operation = it->operation;
+                        if(operation == "IOC")
+                        {
+                            if(VERBOSE) cout<<"cannot modify the IOC operation"<<endl;
+                            return false;
+                        }
+                        m_buy.erase(it);
+                        isFound = true;
+                        if(VERBOSE) cout<<"erase from BUY pricebook"<<endl;
+                        break;
+                    }
+                }
             }
             
-            // add to Buy book
-            PriceBook temp;
-            temp.id = modifiedId;
-            temp.operation = operation;
-            temp.price = price;
-            temp.quantity = quantity;
-            m_buy.push_back(temp);
-            if(VERBOSE)
+            if(isFound)
             {
-                cout<<"add to buy price book"<<endl;
-                cout<< "id ="<<temp.id<<endl;
-                cout<<"operation="<<temp.operation<<endl;
-                cout<<"price="<<temp.price<<endl;
-                cout<<"quantity="<<temp.quantity<<endl;
+                // add to Buy book
+                PriceBook temp;
+                temp.id = modifiedId;
+                temp.operation = operation;
+                temp.price = price;
+                temp.quantity = quantity;
+                m_buy.push_back(temp);
+                if(VERBOSE)
+                {
+                    cout<<"add to buy price book"<<endl;
+                    cout<< "id ="<<temp.id<<endl;
+                    cout<<"operation="<<temp.operation<<endl;
+                    cout<<"price="<<temp.price<<endl;
+                    cout<<"quantity="<<temp.quantity<<endl;
+                }
+                return true;
             }
-            return true;
+            else
+            {
+                if(VERBOSE) cout<<"cannot find the specified ID to modify!"<<endl;
+                return false;
+            }
         }
-        
-        // No return before
-        if(VERBOSE) cout<<"[Warning]: invalid modification operation!"<<endl;
         return false;
     }
     
