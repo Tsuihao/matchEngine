@@ -22,7 +22,7 @@
 #include <algorithm>
 #include <unordered_map>
 
-# define VERBOSE true
+# define VERBOSE false
 using namespace std;
 
 /*
@@ -291,7 +291,7 @@ protected:
         }
 
         auto it = m_buy.begin();
-        for(; it != m_buy.end(); /*empty*/ ) // follow the time-order!
+        for(; it != m_buy.end() && !m_sell.empty(); /*empty*/ ) // follow the time-order!
         {
             if(it->price >= m_sell.back().price) // Buy price >= Sell price
             {
@@ -306,6 +306,7 @@ protected:
                     if(VERBOSE) cout<<"quantity is equal, erase both"<<endl;
                     m_buy.erase(it);
                     m_sell.pop_back();
+                    continue;
                 }
                 if(it->quantity > m_sell.back().quantity) // Buy amount > Sell amount
                 {
@@ -314,6 +315,7 @@ protected:
                     if(VERBOSE) cout<<"update buy quantity="<<it->quantity<<endl;
                     m_sell.pop_back(); // erase from sell pricebook
                     if(VERBOSE) cout<<"erase sell pricebook"<<endl;
+                    continue;
                 }
                 else // Sell amount > Buy amount
                 {
@@ -330,6 +332,7 @@ protected:
                     }
                     m_buy.erase(it); // erase from buy pricebook
                     if(VERBOSE) cout<<"erase buy pricebook"<<endl;
+                    continue;
 
                 }
             }
@@ -339,7 +342,6 @@ protected:
                 ++it;
             }
         }
-        if(VERBOSE) cout<<"Here?"<<endl;
         // Req: If IOC can not be traded right away -> cancel it
         if(it == m_buy.end() && !m_sell.empty())
         {
@@ -371,7 +373,7 @@ protected:
         }
 
         auto it = m_sell.begin();
-        for(; it != m_sell.end(); /*empty*/ ) // follow the time-order!
+        for(; it != m_sell.end() && !m_buy.empty(); /*empty*/ ) // follow the time-order!
         {
             if(it->price <= m_buy.back().price) // Sell price =< Buy price
             {
