@@ -163,7 +163,8 @@ public:
         if(to == "SELL")
         {
             if(VERBOSE) cout<< "modify from BUY to SELL"<<endl;
-            for(auto it = m_buy.begin(); it != m_buy.end(); ++it)
+            auto it = m_buy.begin();
+            for(; it != m_buy.end(); ++it)
             {
                 if(it->id == modifiedId)
                 {
@@ -178,11 +179,12 @@ public:
                     if(VERBOSE) cout<<"erase from BUY pricebook"<<endl;
                     break;
                 }
-                if(it == m_buy.end())
-                {
-                    if(VERBOSE) cout<<"cannot find the specified order id"<<endl;
-                    return false;
-                }
+
+            }
+            if(it == m_buy.end())
+            {
+                if(VERBOSE) cout<<"cannot find the specified order id"<<endl;
+                return false;
             }
             
             // add to sell book
@@ -209,7 +211,8 @@ public:
         if(to == "BUY")
         {
             if(VERBOSE) cout<< "modify from SELL to BUY"<<endl;
-            for(auto it = m_sell.begin(); it != m_sell.end(); ++it)
+            auto it = m_sell.begin();
+            for(; it != m_sell.end(); ++it)
             {
                 if(it->id == modifiedId)
                 {
@@ -224,11 +227,12 @@ public:
                     break;
                 }
 
-                if(it == m_sell.end())
-                {
-                    if(VERBOSE) cout<<"cannot find the specified order id"<<endl;
-                    return false;
-                }
+            }
+
+            if(it == m_sell.end())
+            {
+                if(VERBOSE) cout<<"cannot find the specified order id"<<endl;
+                return false;
             }
             
             // add to Buy book
