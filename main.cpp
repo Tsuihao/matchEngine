@@ -22,7 +22,7 @@
 #include <algorithm>
 #include <unordered_map>
 
-# define VERBOSE false
+# define VERBOSE true
 using namespace std;
 
 /*
@@ -293,7 +293,7 @@ protected:
         auto it = m_buy.begin();
         for(; it != m_buy.end(); /*empty*/ ) // follow the time-order!
         {
-            if(it->price > m_sell.back().price) // Buy price > Sell price
+            if(it->price >= m_sell.back().price) // Buy price >= Sell price
             {
                 // Log out
                 int minQuantity = min(it->quantity, m_sell.back().quantity);
@@ -303,13 +303,17 @@ protected:
                 // Update information
                 if(it->quantity == m_sell.back().quantity)
                 {
+                    if(VERBOSE) cout<<"quantity is equal, erase both"<<endl;
                     m_buy.erase(it);
                     m_sell.pop_back();
                 }
-                else if(it->quantity > m_sell.back().quantity) // Buy amount > Sell amount
+                if(it->quantity > m_sell.back().quantity) // Buy amount > Sell amount
                 {
+                    if(VERBOSE) cout<<"buy amount > sell amount"<<endl;
                     it->quantity = it->quantity - m_sell.back().quantity; // update the quantity
+                    if(VERBOSE) cout<<"update buy quantity="<<it->quantity<<endl;
                     m_sell.pop_back(); // erase from sell pricebook
+                    if(VERBOSE) cout<<"erase sell pricebook"<<endl;
                 }
                 else // Sell amount > Buy amount
                 {
@@ -320,22 +324,30 @@ protected:
                     }
                     else
                     {
+                        if(VERBOSE) cout<<"sell amount > buy amount"<<endl;
                         m_sell.back().quantity = m_sell.back().quantity - it->quantity; // update the quantity
+                        if(VERBOSE) cout<<"update sell quantity="<<m_sell.back().quantity<<endl;
                     }
                     m_buy.erase(it); // erase from buy pricebook
+                    if(VERBOSE) cout<<"erase buy pricebook"<<endl;
+
                 }
             }
             else
             {
+                if(VERBOSE) cout<<"increment iterator"<<endl;
                 ++it;
             }
         }
-
+        if(VERBOSE) cout<<"Here?"<<endl;
         // Req: If IOC can not be traded right away -> cancel it
-        if(it == m_buy.end() && m_sell.back().operation == "IOC")
+        if(it == m_buy.end() && !m_sell.empty())
         {
-            if(VERBOSE) cout<<"cancel the non-matched IOC query!"<<endl;
-            m_sell.pop_back();
+            if(m_sell.back().operation == "IOC")
+            {
+                if(VERBOSE) cout<<"cancel the non-matched IOC query!"<<endl;
+                m_sell.pop_back();
+            }
         }
 
     }
@@ -361,7 +373,7 @@ protected:
         auto it = m_sell.begin();
         for(; it != m_sell.end(); /*empty*/ ) // follow the time-order!
         {
-            if(it->price < m_buy.back().price) // Sell price < Buy price
+            if(it->price <= m_buy.back().price) // Sell price =< Buy price
             {
                 int minQuantity = min(it->quantity, m_buy.back().quantity);
                 // Log out
@@ -372,11 +384,13 @@ protected:
                 {
                     m_sell.erase(it);
                     m_buy.pop_back();
+                    continue;
                 }
-                else if(it->quantity > m_buy.back().quantity) // Sell amount > Buy amount
+                if(it->quantity > m_buy.back().quantity) // Sell amount > Buy amount
                 {
                     it->quantity = it->quantity - m_buy.back().quantity; // update the quantity
                     m_buy.pop_back(); // erase from buy pricebook
+                    continue;
                 }
                 else // Buy amount > Sell amount
                 {
@@ -391,6 +405,7 @@ protected:
                         m_buy.back().quantity = m_buy.back().quantity - it->quantity; // update the quantity
                     }
                     m_sell.erase(it); // erase from sell pricebook
+                    continue;
                 }
             }
             else
@@ -400,10 +415,14 @@ protected:
         }
 
         // Req: If IOC can not be traded right away -> cancel it
-        if(it == m_sell.end() && m_buy.back().operation == "IOC")
+        if(it == m_sell.end() && !m_buy.empty())
         {
-            if(VERBOSE) cout<<"cancel the non-matched IOC query!"<<endl;
-            m_buy.pop_back();
+        
+            if(m_buy.back().operation == "IOC")
+            {
+                if(VERBOSE) cout<<"cancel the non-matched IOC query!"<<endl;
+                m_buy.pop_back();
+            }
         }
 
     }
@@ -423,14 +442,36 @@ protected:
         
         for(auto it = m_sell.begin(); it != m_sell.end(); ++it)
         {
-            sell.insert(std::pair<price, quantity>(it->price, it->quantity));
+            std::map<price, quantity>::iterator it_; // map iterator
+            it_ = sell.find(it->price);
+            if( it_ != sell.end()) // the price is there already
+            {
+                it_->second += it->quantity; // simply add the qantity
+                if(VERBOSE) cout<<"Add to the same map due to eqaul price"<<endl;
+            }
+            else
+            {
+                sell.insert(std::pair<price, quantity>(it->price, it->quantity));
+                if(VERBOSE) cout<<"insert new element into map!"<<endl;
+            }
         }
 
         
-        for(auto it_ = m_buy.begin(); it_ != m_buy.end(); ++it_)
+        for(auto it = m_buy.begin(); it != m_buy.end(); ++it)
         {
+            std::map<price, quantity>::iterator it_; // map iterator
+            it_ = buy.find(it->price);
+            if( it_ != buy.end())
+            {
+                it_->second += it->quantity;
+                if(VERBOSE) cout<<"Add to the same map due to eqaul price"<<endl;
+            }
+            else
+            {
+                buy.insert(std::pair<price, quantity>(it->price, it->quantity));
+                if(VERBOSE) cout<<"insert new element into map!"<<endl;
+            }
 
-            buy.insert(std::pair<price, quantity>(it_->price, it_->quantity));
         }
 
         // The requirement want to bring the descending order!
@@ -468,8 +509,13 @@ int main() {
         // Read the first col and switch by the cases.
         istringstream iss(line);
         vector<string> op{std::istream_iterator<string>(iss), {}};
+
         if(op[0] == "BUY")
         {
+            // Boundary check:
+            if(stoi(op[2]) <=0 || stoi(op[3]) <= 0) continue; // if price <=0 or quantity <=0
+            if(op[4].empty()) continue; // if invalid id. TBD: what else is invalid id?
+
             if(jarvis.addBuyOrder(op))
             {
                 jarvis.checkMatches("SELL");
@@ -482,6 +528,10 @@ int main() {
 
         if(op[0] == "SELL")
         {
+            // Boundary check:
+            if(stoi(op[2]) <=0 || stoi(op[3]) <= 0) continue; // if price <=0 or quantity <=0
+            if(op[4].empty()) continue; // if invalid id. TBD: what else is invalid id?
+
             if(jarvis.addSellOrder(op))
             {
                 jarvis.checkMatches("BUY");
@@ -494,11 +544,16 @@ int main() {
 
         if(op[0] == "CANCEL")
         {
+            // Boundary check:
+            if(op[1].empty()) continue; // if invalid id. TBD: what else is invalid id?
             jarvis.cancelOrder(op);
         }
 
         if(op[0] == "MODIFY")
         {
+            // Boundary check:
+            if(stoi(op[3]) <=0 || stoi(op[4]) <= 0) continue; // if price <=0 or quantity <=0
+
             if(jarvis.modifyOrder(op))
             {
                 if(op[2] == "BUY") jarvis.checkMatches("SELL");
