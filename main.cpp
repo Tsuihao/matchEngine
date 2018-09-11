@@ -142,22 +142,18 @@ public:
         
         // No return before!
         if(VERBOSE) cout<<"[Warning]: no matched id is found! invalid cancel id "<<endl;
+        return;
     }
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    
-    // TBD: What if partially modify the quantity? 
-    // 1. Check the valid id
-    // 2. Check not IOC
     bool modifyOrder(vector<string>& op)
     {
 
         string modifiedId = op[1]; // second col is the wanted modified id
-        string to = op[2]; // MODIFY order1 SELL 1000 10, the op[2] reveals where to search
+        string to = op[2]; // MODIFY order1 SELL 1000 10
         int price = stoi(op[3]);
         int quantity = stoi(op[4]);
         string operation; 
-        
         
         // search in both buy & sell priceBook
         if(to == "SELL")
