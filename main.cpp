@@ -563,6 +563,7 @@ int main() {
         if(op[0] == "BUY")
         {
             // Boundary check:
+            if(!(op[1] == "GFD" || op[1] == "IOC")) continue; // if the operation is invalid
             if(stoi(op[2]) <=0 || stoi(op[3]) <= 0) continue; // if price <=0 or quantity <=0
             if(op[4].empty()) continue; // if invalid id. TBD: what else is invalid id?
 
@@ -579,6 +580,7 @@ int main() {
         if(op[0] == "SELL")
         {
             // Boundary check:
+            if(!(op[1] == "GFD" || op[1] == "IOC")) continue; // if the operation is invalid
             if(stoi(op[2]) <=0 || stoi(op[3]) <= 0) continue; // if price <=0 or quantity <=0
             if(op[4].empty()) continue; // if invalid id. TBD: what else is invalid id?
 
